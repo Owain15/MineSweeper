@@ -5,10 +5,10 @@ UI Ui = new UI();
 
 GI.initializeConsoleWindow();
 
-int fieldDimensionX = 5;
-int fieldDimensionY = 4;
+int fieldDimensionX = 20;
+int fieldDimensionY = 10;
 
-int numberOfMines = 4;
+int numberOfMines = 5;
     
 Minefield field = new Minefield(fieldDimensionX,fieldDimensionY, numberOfMines);
 

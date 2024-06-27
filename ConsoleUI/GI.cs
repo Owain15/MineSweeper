@@ -17,13 +17,26 @@ namespace MineSweeper.ConsoleUI
         private static int gamePositionX = 10;
         private static int gamePositionY = 5;
 
-        private static ConsoleColor backgroundColor = ConsoleColor.DarkBlue;
-        private static ConsoleColor printColor = ConsoleColor.Blue;
-        private static ConsoleColor highlightColor = ConsoleColor.Cyan;
+        
+        #endregion
 
+        #region Colors
+
+        private static ConsoleColor backgroundColor = ConsoleColor.DarkCyan;
+        private static ConsoleColor printColor = ConsoleColor.Black;
+        private static ConsoleColor highlightColor = ConsoleColor.Cyan;
 
         #endregion
 
+        #region Symbols
+
+        private static char flag = '¥';
+        private static char block = '▓';
+        private static char mine = 'Ø';
+
+        #endregion
+
+      
         public static void initializeConsoleWindow()
         {
             Console.CursorVisible = false;
@@ -41,7 +54,21 @@ namespace MineSweeper.ConsoleUI
                 for (int y = 0; y < minefield.field.GetLength(1); y ++)
                 {
                     Console.SetCursorPosition(x + gamePositionX, y + gamePositionY);
-                    Console.WriteLine(minefield.field[x,y].adjacentMines);
+                   
+                    if (minefield.field[x,y].containsAMine)
+                    {
+                        SetColor(highlightColor);
+                        Console.Write(mine); 
+                        ResetColor();
+                    }
+                    else 
+                    {
+                        SetColor(printColor);
+                        Console.Write(block);
+                        ResetColor();
+                        //Console.WriteLine(minefield.field[x,y].adjacentMines);
+                    }
+                    
                     
                 }
 
@@ -51,6 +78,19 @@ namespace MineSweeper.ConsoleUI
         }
 
 
+
+
+
+
+
+        private static void SetColor(ConsoleColor color)
+        {
+            Console.BackgroundColor = backgroundColor;
+            Console.ForegroundColor = color;
+        }
+
+        private static void ResetColor()
+        { Console.ResetColor(); }
 
     }
 }

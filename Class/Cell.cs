@@ -10,8 +10,8 @@ namespace MineSweeper.Class
     {
         #region Properties
 
-        public int CellPositionX;
-        public int CellPositionY;
+        public int X;
+        public int Y;
 
         public bool containsAMine;
         public bool hasCellBeenFlagged;
@@ -23,8 +23,8 @@ namespace MineSweeper.Class
         public Cell(int cellPositionX, int cellPositionY) 
         {
          
-            CellPositionX = cellPositionX;
-            CellPositionY = cellPositionY;
+            X = cellPositionX;
+            Y = cellPositionY;
 
             containsAMine = false;
             hasCellBeenFlagged = false;

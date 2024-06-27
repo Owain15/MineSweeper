@@ -6,7 +6,9 @@ using System.Threading.Tasks;
 
 namespace MineSweeper.ConsoleUI
 {
-    internal class UI
+    internal static class UI
     {
+
+
     }
 }
