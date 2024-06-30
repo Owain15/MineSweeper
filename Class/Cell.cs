@@ -13,6 +13,7 @@ namespace MineSweeper.Class
         public int X;
         public int Y;
 
+        public bool IsCellHidden;
         public bool containsAMine;
         public bool hasCellBeenFlagged;
 
@@ -26,6 +27,7 @@ namespace MineSweeper.Class
             X = cellPositionX;
             Y = cellPositionY;
 
+            IsCellHidden = true;
             containsAMine = false;
             hasCellBeenFlagged = false;
         
