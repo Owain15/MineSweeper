@@ -1,52 +1,49 @@
 ﻿using MineSweeper.Class;
 using MineSweeper.ConsoleUI;
 using System.Numerics;
+using System.Runtime.InteropServices;
 
 ConsolePlayer Player = new ConsolePlayer();
-UI Input = new UI();
-
-//Game Settings
-
-int fieldDimensionX = 20;
-int fieldDimensionY = 10;
-
-int numberOfMines = 5;
-
-//
+UI Ui = new UI();
 
 Minefield minefield;
 
-//Run Program
+
 
 GI.initializeConsoleWindow();
-RunGame();
+//GameSettings settings = new GameSettings(1);
+
+var settings = Ui.RunStartScreen();
+
+RunGame(settings);
 
 Console.Read();
 
 
 
 
-void RunGame()
+void RunGame(GameSettings settings)
 {
     var isGameRunning = true;  
     
-    minefield = new Minefield(fieldDimensionX,fieldDimensionY, numberOfMines);
+    minefield = new Minefield(settings.fieldDimensionX,settings.fieldDimensionY,settings.numberOfMines);
 
     //render screen
- 
+   // GI.RenderScreen();
+
     while (isGameRunning)
     {
         GI.RenderDisplay(minefield);
 
         // Make Highlighted Player Flash.
 
-        GI.HighlightPlayer(Input.player.GetLocation());
+        GI.HighlightPlayer(Ui.player.GetLocation());
 
-        var input = Input.WaitForInput();
+        var input = Ui.WaitForInput();
 
-        GI.RemoveHighlightPlayer(Input.player.GetLocation(),minefield);
+        GI.RemoveHighlightPlayer(Ui.player.GetLocation(),minefield);
    
-        isGameRunning = Input.HandelInput(input,minefield);
+        isGameRunning = Ui.HandelInput(input,minefield);
 
         if (isGameRunning)
         { isGameRunning = EvaluateField(); }
@@ -71,11 +68,11 @@ void RunGame()
             { FlagsOnMines++; }
         }
         
-        if (cellsStillHidden == numberOfMines)
+        if (cellsStillHidden == settings.numberOfMines)
         { return false; }
-        else if (FlagsOnMines == numberOfMines) 
+        else if (FlagsOnMines == settings.numberOfMines) 
             { return false; }
         else { return true; }
     }
-
+     
 }

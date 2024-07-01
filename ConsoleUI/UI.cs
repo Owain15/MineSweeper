@@ -17,6 +17,26 @@ namespace MineSweeper.ConsoleUI
 
         }
 
+        public GameSettings RunStartScreen()
+        {
+            var menuIndex = 1;
+            var hasGameGotSetting = false;
+
+            var title = "minesweeper!";
+            List<string> menuOptions = new List<string>()
+            { "EACY","MEDEAM","HARD","QUIT"}; 
+
+            GI.RenderMenu(title, menuOptions);
+
+            while (!hasGameGotSetting)
+            {
+                GI.RenderMenuHighlightCurrentChoice(menuOptions, menuIndex);
+                //wait for input
+                //handle input
+            }
+            return new GameSettings(menuIndex);
+        }
+
         public ConsoleKey WaitForInput()
         {
             
@@ -118,12 +138,23 @@ namespace MineSweeper.ConsoleUI
         }
         private void HandelSpacebar(int[] location, Minefield minefield)
         {
+            if (minefield.field[location[0], location[1]].hasCellBeenFlagged)
+            { minefield.field[location[0], location[1]].hasCellBeenFlagged = false; }
+            else if (minefield.field[location[0], location[1]].IsCellHidden)
+            {
+                var numberOfMines = 0;
+                var numberOfFlagsUsed = 0;
 
-            if (minefield.field[location[0], location[1]].IsCellHidden)
-            { 
-                minefield.field[location[0], location[1]].IsCellHidden = false;
-
-                minefield.field[location[0],location[1]].hasCellBeenFlagged = true; 
+                foreach (var cell in minefield.field)
+                { 
+                    if (cell.containsAMine)
+                    {  numberOfMines++; }
+                    if (cell.hasCellBeenFlagged) 
+                    { numberOfFlagsUsed++; } 
+                  
+                }
+                if (numberOfFlagsUsed < numberOfMines)
+                { minefield.field[location[0], location[1]].hasCellBeenFlagged = true; } 
             }
 
         }
