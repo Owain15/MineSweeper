@@ -20,17 +20,18 @@ namespace MineSweeper.ConsoleUI
         public GameSettings RunStartScreen()
         {
             var menuIndex = 1;
-            var hasGameGotSetting = false;
+            var gameHasSetting = false;
 
             var title = "minesweeper!";
             List<string> menuOptions = new List<string>()
             { "EACY","MEDEAM","HARD","QUIT"}; 
 
-            GI.RenderMenu(title, menuOptions);
+            ConsoleMenu startMenu = new ConsoleMenu(GI.gamePositionX,GI.gamePositionY,title,menuOptions);
+            //startMenu.RenderCurrentMenu(menuIndex);
 
-            while (!hasGameGotSetting)
+            while (!gameHasSetting)
             {
-                GI.RenderMenuHighlightCurrentChoice(menuOptions, menuIndex);
+                startMenu.RenderCurrentMenu(menuIndex);
                 //wait for input
                 //handle input
             }
