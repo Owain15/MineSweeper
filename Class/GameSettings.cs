@@ -17,9 +17,9 @@ namespace MineSweeper.Class
         { 
          switch(gameSettingsIndex)
             {
-                case 1: fieldDimensionX = 20; fieldDimensionY = 10; numberOfMines = 10; break;
-                case 2: fieldDimensionX = 30; fieldDimensionY = 20; numberOfMines = 15; break;
-                case 3: fieldDimensionX = 60; fieldDimensionY = 20; numberOfMines = 35; break;
+                case 0: fieldDimensionX = 20; fieldDimensionY = 10; numberOfMines = 10; break;
+                case 1: fieldDimensionX = 30; fieldDimensionY = 20; numberOfMines = 15; break;
+                case 2: fieldDimensionX = 60; fieldDimensionY = 20; numberOfMines = 35; break;
                 //case 4: UI.RunCustomSettings(); break;
                 default: fieldDimensionX = 20; fieldDimensionY = 10; numberOfMines = 10; break;
             }

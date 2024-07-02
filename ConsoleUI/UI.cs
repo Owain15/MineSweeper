@@ -19,25 +19,120 @@ namespace MineSweeper.ConsoleUI
 
         public GameSettings RunStartScreen()
         {
-            var menuIndex = 1;
-            var gameHasSetting = false;
+            var menuIndex = 0;
+            var gameSettingChosen = false;
 
-            var title = "minesweeper!";
+            var title = "Minesweeper!";
             List<string> menuOptions = new List<string>()
-            { "EACY","MEDEAM","HARD","QUIT"}; 
+            { "EACY","MEDEAM","HARD","CUSTOM GAME","QUIT"}; 
 
             ConsoleMenu startMenu = new ConsoleMenu(GI.gamePositionX,GI.gamePositionY,title,menuOptions);
-            //startMenu.RenderCurrentMenu(menuIndex);
 
-            while (!gameHasSetting)
+            while (!gameSettingChosen)
             {
                 startMenu.RenderCurrentMenu(menuIndex);
-                //wait for input
-                //handle input
+                var input = WaitForInput();
+
+                     if (input == ConsoleKey.Escape) { Environment.Exit(0); }
+                else if (input == ConsoleKey.UpArrow) { menuIndex--; }
+                else if (input == ConsoleKey.DownArrow) { menuIndex++; }
+                else if (input == ConsoleKey.Enter && menuIndex == 3) { var settings = RunCustomSettingsMenu(); return settings; }
+                else if (input == ConsoleKey.Enter&&menuIndex==4){ Environment.Exit(0); }
+                else if (input == ConsoleKey.Enter) { gameSettingChosen = true; }
+
+                     if (menuIndex > menuOptions.Count-1) { menuIndex = 0; }
+                     if (menuIndex < 0) { menuIndex = menuOptions.Count-1; }
             }
             return new GameSettings(menuIndex);
         }
+        
+        private GameSettings RunCustomSettingsMenu()
+        {
+            var settings = new GameSettings(1);
 
+            var title = "Custom Game Menu!";
+            var menuOptions = new List<string>()
+            { $"Field Width:{settings.fieldDimensionX}",$"Field Height: {settings.fieldDimensionY}",$"Number Of Mines: {settings.numberOfMines}","Start Game"};
+
+            var customGameMenu = new ConsoleMenu(GI.gamePositionX, GI.gamePositionY, title,menuOptions);
+
+            var settingsHaveBeenSet = false;
+            var menuIndex = 0;
+
+            while (!settingsHaveBeenSet)
+            {
+                customGameMenu.RenderCurrentMenu(menuIndex);
+                
+                var input = WaitForInput();
+
+                switch (menuIndex)
+                {
+                    case 0: 
+                        // width Setting
+                         switch(input)
+                         {
+                            case ConsoleKey.UpArrow:menuIndex = 3; break;
+                            case ConsoleKey.DownArrow:menuIndex = 1; break;
+
+                            case ConsoleKey.LeftArrow:settings.fieldDimensionX = settings.fieldDimensionX - 5;if (settings.fieldDimensionX<0) { settings.fieldDimensionX = 0; } break;
+                            case ConsoleKey.RightArrow: settings.fieldDimensionX = settings.fieldDimensionX + 5; if(settings.fieldDimensionX > 60) { settings.fieldDimensionX = 60; } break;
+
+                            case ConsoleKey.Escape:Environment.Exit(0); break;
+                            default:break;
+
+                        }
+                    break;
+
+                    case 1:
+                        //Height Setting    
+                        switch (input)
+                        {
+                            case ConsoleKey.UpArrow: menuIndex = 0; break;
+                            case ConsoleKey.DownArrow: menuIndex = 2; break;
+
+                            //case ConsoleKey.LeftArrow: settings.fieldDimensionX = settings.fieldDimensionX - 5; if (settings.fieldDimensionX < 0) { settings.fieldDimensionX = 0; } break;
+                            //case ConsoleKey.RightArrow: settings.fieldDimensionX = settings.fieldDimensionX + 5; if (settings.fieldDimensionX > 60) { settings.fieldDimensionX = 60; } break;
+
+                            case ConsoleKey.Escape: Environment.Exit(0); break;
+                            default: break;
+
+                        }
+                        break;
+
+                    case 2:
+                        //number of mines
+                        switch (input)
+                        {
+                            case ConsoleKey.UpArrow: menuIndex = 1; break;
+                            case ConsoleKey.DownArrow: menuIndex = 3; break;
+
+                            //case ConsoleKey.LeftArrow: settings.fieldDimensionX = settings.fieldDimensionX - 5; if (settings.fieldDimensionX < 0) { settings.fieldDimensionX = 0; } break;
+                            //case ConsoleKey.RightArrow: settings.fieldDimensionX = settings.fieldDimensionX + 5; if (settings.fieldDimensionX > 60) { settings.fieldDimensionX = 60; } break;
+
+                            case ConsoleKey.Escape: Environment.Exit(0); break;
+                            default: break;
+                        }
+                        break;
+
+                    case 3:
+                        //start game
+                        switch (input)
+                        {
+                            case ConsoleKey.UpArrow: menuIndex = 2; break;
+                            case ConsoleKey.DownArrow: menuIndex = 0; break;
+
+                            case ConsoleKey.Enter:break;
+                                
+                            case ConsoleKey.Escape: Environment.Exit(0); break;
+                            default: break;
+                        }
+                        break;
+
+                    default:break;
+                }
+            }
+            return settings;
+        }
         public ConsoleKey WaitForInput()
         {
             
@@ -55,10 +150,8 @@ namespace MineSweeper.ConsoleUI
 
         }
 
-        public bool HandelInput(ConsoleKey input, Minefield field)
-        {
-            var isGameStillRunning = true;
-
+        public void HandelInput(ConsoleKey input, Minefield field)
+        { 
             var location = player.GetLocation();
 
             switch (input)
@@ -68,15 +161,13 @@ namespace MineSweeper.ConsoleUI
                 case ConsoleKey.LeftArrow: HandelLeftArrow(location, field); break;
                 case ConsoleKey.RightArrow: HandelRightArrow(location, field); break;
 
-                case ConsoleKey.Enter: isGameStillRunning = HandelEnter(location,field); break;
+                case ConsoleKey.Enter: HandelEnter(location,field); break;
                 case ConsoleKey.Spacebar: HandelSpacebar(location, field); break;
 
-                case ConsoleKey.Escape: isGameStillRunning = false; break;
+                case ConsoleKey.Escape: HandelEscape(field); break;
             }
 
             player.UpdatePlayerLocation(location);
-
-            return isGameStillRunning;
         
         }
 
@@ -117,25 +208,16 @@ namespace MineSweeper.ConsoleUI
 
         }
 
-        private bool HandelEnter(int[] location, Minefield minefield)
-        {
-            var isGameStillRunning = true;
-            
+        private void HandelEnter(int[] location, Minefield minefield)
+        {   
             var cell = minefield.field[location[0], location[1]];
 
             if (cell.hasCellBeenFlagged) 
-            { return isGameStillRunning; }
+            { return; }
 
             if (cell.IsCellHidden)
             { UncoverCell(minefield.field[location[0], location[1]], minefield); }
-             
-            if(cell.containsAMine)
-            { isGameStillRunning = false; }
-
-            
            
-
-            return isGameStillRunning;
         }
         private void HandelSpacebar(int[] location, Minefield minefield)
         {
@@ -158,6 +240,14 @@ namespace MineSweeper.ConsoleUI
                 { minefield.field[location[0], location[1]].hasCellBeenFlagged = true; } 
             }
 
+        }
+        private void HandelEscape(Minefield minefield)
+        {
+            foreach (var cell in minefield.field)
+            {
+                cell.hasCellBeenFlagged = false;
+                cell.IsCellHidden = false;
+            }
         }
        
         

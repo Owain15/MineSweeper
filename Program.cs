@@ -43,10 +43,9 @@ void RunGame(GameSettings settings)
 
         GI.RemoveHighlightPlayer(Ui.player.GetLocation(),minefield);
    
-        isGameRunning = Ui.HandelInput(input,minefield);
+        Ui.HandelInput(input,minefield);
 
-        if (isGameRunning)
-        { isGameRunning = EvaluateField(); }
+        isGameRunning = EvaluateField(); 
 
     }
 
@@ -61,6 +60,8 @@ void RunGame(GameSettings settings)
 
         foreach (var cell in minefield.field)
         {
+            if(cell.containsAMine && !cell.IsCellHidden)
+            { return false; }
             if (cell.IsCellHidden)
             {cellsStillHidden++;}
 
