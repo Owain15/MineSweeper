@@ -95,6 +95,55 @@ namespace MineSweeper.ConsoleUI
 
         }
 
+        public static void RenderEndScreen(Minefield minefield, bool hasPlayerClearedField)
+        {
+            var promptText = "PRESS ANY KEY TO CONTINUE!";
+            var promptX = GI.gamePositionX + +2 ;
+            var promptY = GI.gamePositionY + minefield.field.GetLength(1)+2;
+            var promptBoxWidth = minefield.field.GetLength(0);
+
+            WrightTextCenterd(promptX, promptY, promptText,promptBoxWidth); 
+        }
+
+        public static void RenderScreen(Minefield field)
+        {
+            Console.Clear();
+
+            RenderHeadderBox(field);
+
+            DrawBorder((field.field.GetLength(0) + 2), (field.field.GetLength(1) + 2), -1,-1);
+            
+            RenderDisplay(field);
+
+            RenderFooter(field);
+        }
+
+        public static void RenderHeadderBox(Minefield field)
+        {
+            var text = "MINESWEEPER!";
+
+            var borderWidth = field.field.GetLength(0)+2;
+            var borderHeight = 4;
+
+            var borderWidthOffset = -1;
+            var borderHeightOffset = -5;
+
+            DrawBorder(borderWidth,borderHeight,borderWidthOffset,borderHeightOffset);
+            
+            WrightTextCenterd(gamePositionX,gamePositionY-5,text,field.field.GetLength(0));
+        }
+        public static void RenderFooter(Minefield field)
+        {
+            var borderWidth = field.field.GetLength(0) + 2;
+            var borderHeight = 3;
+
+            var borderWidthOffset = -1;
+            var borderHeightOffset =field.field.GetLength(1)+1;
+
+            DrawBorder(borderWidth, borderHeight, borderWidthOffset , borderHeightOffset);
+        }
+
+
         internal static void HighlightPlayer(int[] playerLocation)
         {
             int x = playerLocation[0] + gamePositionX;
@@ -165,119 +214,151 @@ namespace MineSweeper.ConsoleUI
 
         }
 
-        //public static void RenderMenu(string title, List<string> menuOptions)
-        //{
-        //    var XDimention = GetLongestString(title, menuOptions) + 8;
-        //    var YDimention = (menuOptions.Count() * 2) + 1;
+        public static void WrightTextCenterd(int curserPositionX, int curserPositionY, string text, int xDimention)
+        {
+            Console.SetCursorPosition(curserPositionX + (xDimention / 2) - (text.Length / 2), curserPositionY);
+            Console.WriteLine(text);
 
-        //    RenderTitleBox(title, XDimention);
-        //    RenderOptionsBox(menuOptions, XDimention, YDimention, 3);
-        //}
-        //public static void RenderMenuHighlightCurrentChoice(int menuXDimention, int MenuYDimention,  List<string> menuOptions, int menuIndex)
-        //{
-        //    var XDimention = GetLongestString(title, menuOptions) + 8;
-        //    var YDimention = (menuOptions.Count() * 2) + 1;
-            
-        //    DrawBorder(xDimention, yDimention, yOfset);
+        }
 
-        //    WrightOptions(menuOptions, xDimention, yOfset);
-        //} 
+        public static void DrawBorder(int width, int height)
+        {
+            char[,] border = new char[width, height];
+            int[] currentChar = new int[2];
 
-        //private static void RenderTitleBox(string title, int xDimention)
-        //{
-        //    DrawBorder(xDimention, 3,0);
-        //    WrightTextCenterd(gamePositionX,gamePositionY+1, title,xDimention);
+            for (int x = 0; x < width; x++)
+            {
+                for (int y = 0; y < height; y++)
+                {
+                    currentChar[0] = x;
+                    currentChar[1] = y;
 
-        //}
-        //private static void DrawBorder(int width, int height,int hightOfset)
-        //{
-        //    char[,] border = new char[width, height];
-        //    int[] currentChar = new int[2];
- 
-        //    for (int x = 0; x < width; x++)
-        //    {
-        //        for(int y = 0; y < height; y++)
-        //        {
-        //            currentChar[0] = x;
-        //            currentChar[1] = y;
+                    if (x == 0 && y == 0)
+                    {
+                        Console.SetCursorPosition(x + gamePositionX, y + gamePositionY );
+                        Console.Write('╔');
+                    }
+                    else if (x == width - 1 && y == 0)
+                    {
+                        Console.SetCursorPosition(x + gamePositionX, y + gamePositionY );
+                        Console.Write('╗');
+                    }
+                    else if (x == 0 && y == height - 1)
+                    {
+                        Console.SetCursorPosition(x + gamePositionX, y + gamePositionY );
+                        Console.Write('╚');
+                    }
+                    else if (x == width - 1 && y == height - 1)
+                    {
+                        Console.SetCursorPosition(x + gamePositionX, y + gamePositionY );
+                        Console.Write('╝');
+                    }
+                    else if (x == 0 || x == width - 1)
+                    {
+                        Console.SetCursorPosition(x + gamePositionX, y + gamePositionY );
+                        Console.Write('║');
+                    }
+                    else if (y == 0 || y == height - 1)
+                    {
+                        Console.SetCursorPosition(x + gamePositionX, y + gamePositionY );
+                        Console.Write('═');
+                    }
 
-        //           if (currentChar[0] == 0 && currentChar[1] == 0) 
-        //           {
-        //                Console.SetCursorPosition(x + gamePositionX, y + gamePositionY+hightOfset);
-        //                Console.Write('╔');
-        //           }
-        //           else if (currentChar[0] == width-1 && currentChar[1] == 0)
-        //           {
-        //                Console.SetCursorPosition(x + gamePositionX, y + gamePositionY + hightOfset);
-        //                Console.Write('╗');
-        //           }
-        //           else if (currentChar[0] == 0 && currentChar[1] == height-1)
-        //           {
-        //                Console.SetCursorPosition(x + gamePositionX, y + gamePositionY + hightOfset);
-        //                Console.Write('╚');
-        //           }
-        //           else if (currentChar[0] == width - 1 && currentChar[1] == height - 1)
-        //           {
-        //                Console.SetCursorPosition(x + gamePositionX, y + gamePositionY + hightOfset);
-        //                Console.Write('╝');
-        //           }
-        //           else if(currentChar[0] == 0 || currentChar[0] == width-1)
-        //           {
-        //                Console.SetCursorPosition(x + gamePositionX, y + gamePositionY + hightOfset);
-        //                Console.Write('║');
-        //           }
-        //           else if (currentChar[1] == 0 || currentChar[1] == height-1)
-        //           {
-        //                Console.SetCursorPosition(x + gamePositionX, y + gamePositionY + hightOfset);
-        //                Console.Write('═');
-        //           }
+                }
+            }
+        }
+        public static void DrawBorder(int width, int height, int hightOffset)
+        {
+            char[,] border = new char[width, height];
+            int[] currentChar = new int[2];
 
-        //        }
-        //    }
-              
-        
-        //}
-        //private static void RenderOptionsBox(List<string> menuOptions, int xDimention, int yDimention, int yOfset)
-        //{
-        //    DrawBorder(xDimention, yDimention,yOfset);
+            for (int x = 0; x < width; x++)
+            {
+                for (int y = 0; y < height; y++)
+                {
+                    currentChar[0] = x;
+                    currentChar[1] = y;
 
-        //    WrightOptions(menuOptions,xDimention,yOfset );
+                    if (x == 0 && y == 0)
+                    {
+                        Console.SetCursorPosition(x + gamePositionX, y + gamePositionY + hightOffset);
+                        Console.Write('╔');
+                    }
+                    else if (x == width - 1 && y == 0)
+                    {
+                        Console.SetCursorPosition(x + gamePositionX, y + gamePositionY + hightOffset);
+                        Console.Write('╗');
+                    }
+                    else if (x == 0 && y == height - 1)
+                    {
+                        Console.SetCursorPosition(x + gamePositionX, y + gamePositionY + hightOffset);
+                        Console.Write('╚');
+                    }
+                    else if (x == width - 1 && y == height - 1)
+                    {
+                        Console.SetCursorPosition(x + gamePositionX, y + gamePositionY + hightOffset);
+                        Console.Write('╝');
+                    }
+                    else if (x == 0 || x == width - 1)
+                    {
+                        Console.SetCursorPosition(x + gamePositionX, y + gamePositionY + hightOffset);
+                        Console.Write('║');
+                    }
+                    else if (y == 0 || y == height - 1)
+                    {
+                        Console.SetCursorPosition(x + gamePositionX, y + gamePositionY + hightOffset);
+                        Console.Write('═');
+                    }
 
-           
-        //}
-        //private static void WrightOptions(List<string> menuOptions, int xDimention, int yOfset)
-        //{
-        //     var optionCount = 0;
+                }
+            }
+        }
+        public static void DrawBorder(int width, int height, int widthOffset, int hightOffset)
+        {
+            char[,] border = new char[width, height];
+            int[] currentChar = new int[2];
 
-        //    foreach (string option in menuOptions)
-        //    {
-        //        var x = gamePositionX;
-        //        var y = gamePositionY+yOfset+(optionCount * 2)+1;
+            for (int x = 0; x < width; x++)
+            {
+                for (int y = 0; y < height; y++)
+                {
+                    currentChar[0] = x;
+                    currentChar[1] = y;
 
-        //        WrightTextCenterd(x,y,option,xDimention);
+                    if (x == 0 && y == 0)
+                    {
+                        Console.SetCursorPosition(x + gamePositionX + widthOffset, y + gamePositionY + hightOffset);
+                        Console.Write('╔');
+                    }
+                    else if (x == width - 1 && y == 0)
+                    {
+                        Console.SetCursorPosition(x + gamePositionX + widthOffset, y + gamePositionY + hightOffset);
+                        Console.Write('╗');
+                    }
+                    else if (x == 0 && y == height - 1)
+                    {
+                        Console.SetCursorPosition(x + gamePositionX + widthOffset, y + gamePositionY + hightOffset);
+                        Console.Write('╚');
+                    }
+                    else if (x == width - 1 && y == height - 1)
+                    {
+                        Console.SetCursorPosition(x + gamePositionX + widthOffset, y + gamePositionY + hightOffset);
+                        Console.Write('╝');
+                    }
+                    else if (x == 0 || x == width - 1)
+                    {
+                        Console.SetCursorPosition(x + gamePositionX + widthOffset, y + gamePositionY + hightOffset);
+                        Console.Write('║');
+                    }
+                    else if (y == 0 || y == height - 1)
+                    {
+                        Console.SetCursorPosition(x + gamePositionX + widthOffset, y + gamePositionY + hightOffset);
+                        Console.Write('═');
+                    }
 
-        //        optionCount++;
-            
-        //    }
-        //}
-
-
-        //private static void WrightTextCenterd(int curserPositionX, int curserPositionY,  string text, int xDimention)
-        //{
-        //    Console.SetCursorPosition(curserPositionX + (xDimention / 2) - (text.Length / 2), curserPositionY);
-        //    Console.WriteLine(text);
-
-        //}
-
-        //private static int GetLongestString(string title, List<string> menuOptions)
-        //{
-        //    var listCopy = new List<string>();
-
-        //    listCopy.Add(title);
-        //    foreach (var item in menuOptions) { listCopy.Add(item); }
-
-        //    return listCopy.Max(x => x.Length);
-        //}
+                }
+            }
+        }
 
 
     }

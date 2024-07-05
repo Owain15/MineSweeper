@@ -51,6 +51,7 @@ namespace MineSweeper.ConsoleUI
             var settings = new GameSettings(1);
 
             var title = "Custom Game Menu!";
+           
             var menuOptions = new List<string>()
             { $"Field Width:{settings.fieldDimensionX}",$"Field Height: {settings.fieldDimensionY}",$"Number Of Mines: {settings.numberOfMines}","Start Game"};
 
@@ -62,36 +63,56 @@ namespace MineSweeper.ConsoleUI
             while (!settingsHaveBeenSet)
             {
                 customGameMenu.RenderCurrentMenu(menuIndex);
-                
+
                 var input = WaitForInput();
+
+                //settings = HandelCustomGameMenu(settings, menuIndex, input);
 
                 switch (menuIndex)
                 {
-                    case 0: 
+
+                    case 0:
+                        
                         // width Setting
-                         switch(input)
-                         {
-                            case ConsoleKey.UpArrow:menuIndex = 3; break;
-                            case ConsoleKey.DownArrow:menuIndex = 1; break;
 
-                            case ConsoleKey.LeftArrow:settings.fieldDimensionX = settings.fieldDimensionX - 5;if (settings.fieldDimensionX<0) { settings.fieldDimensionX = 0; } break;
-                            case ConsoleKey.RightArrow: settings.fieldDimensionX = settings.fieldDimensionX + 5; if(settings.fieldDimensionX > 60) { settings.fieldDimensionX = 60; } break;
+                        switch (input)
+                        {
 
-                            case ConsoleKey.Escape:Environment.Exit(0); break;
-                            default:break;
+                            case ConsoleKey.UpArrow: menuIndex = 3; break;
+                            case ConsoleKey.DownArrow: menuIndex = 1; break;
+
+                            case ConsoleKey.LeftArrow:
+                                settings.fieldDimensionX -= 5;
+                                if (settings.fieldDimensionX < 5) { settings.fieldDimensionX = 5; }
+                                break;
+
+                            case ConsoleKey.RightArrow: 
+                                settings.fieldDimensionX += 5;
+                                if (settings.fieldDimensionX > 60) { settings.fieldDimensionX = 60; } break;
+
+                            case ConsoleKey.Escape: Environment.Exit(0); break;
+                            default: break;
 
                         }
-                    break;
+
+                        break;
 
                     case 1:
+                        
                         //Height Setting    
+                        
                         switch (input)
                         {
                             case ConsoleKey.UpArrow: menuIndex = 0; break;
                             case ConsoleKey.DownArrow: menuIndex = 2; break;
 
-                            //case ConsoleKey.LeftArrow: settings.fieldDimensionX = settings.fieldDimensionX - 5; if (settings.fieldDimensionX < 0) { settings.fieldDimensionX = 0; } break;
-                            //case ConsoleKey.RightArrow: settings.fieldDimensionX = settings.fieldDimensionX + 5; if (settings.fieldDimensionX > 60) { settings.fieldDimensionX = 60; } break;
+                            case ConsoleKey.LeftArrow: 
+                                settings.fieldDimensionY -= 5; 
+                                if (settings.fieldDimensionY < 5) { settings.fieldDimensionY = 5; } break;
+                            
+                            case ConsoleKey.RightArrow: 
+                                settings.fieldDimensionY+= 5; 
+                                if (settings.fieldDimensionY > 20) { settings.fieldDimensionY = 20; } break;
 
                             case ConsoleKey.Escape: Environment.Exit(0); break;
                             default: break;
@@ -100,14 +121,22 @@ namespace MineSweeper.ConsoleUI
                         break;
 
                     case 2:
+                        
                         //number of mines
+                        
                         switch (input)
                         {
                             case ConsoleKey.UpArrow: menuIndex = 1; break;
                             case ConsoleKey.DownArrow: menuIndex = 3; break;
 
-                            //case ConsoleKey.LeftArrow: settings.fieldDimensionX = settings.fieldDimensionX - 5; if (settings.fieldDimensionX < 0) { settings.fieldDimensionX = 0; } break;
-                            //case ConsoleKey.RightArrow: settings.fieldDimensionX = settings.fieldDimensionX + 5; if (settings.fieldDimensionX > 60) { settings.fieldDimensionX = 60; } break;
+                            case ConsoleKey.LeftArrow: 
+                                settings.numberOfMines -= 1; 
+                                if (settings.numberOfMines < 1) { settings.numberOfMines = 1; } break;
+                            
+                            case ConsoleKey.RightArrow: 
+                                settings.numberOfMines += 1; 
+                                if (settings.numberOfMines > (settings.fieldDimensionX * settings.fieldDimensionY)-1) 
+                                { settings.numberOfMines = (settings.fieldDimensionX * settings.fieldDimensionY) - 1; } break;
 
                             case ConsoleKey.Escape: Environment.Exit(0); break;
                             default: break;
@@ -121,18 +150,29 @@ namespace MineSweeper.ConsoleUI
                             case ConsoleKey.UpArrow: menuIndex = 2; break;
                             case ConsoleKey.DownArrow: menuIndex = 0; break;
 
-                            case ConsoleKey.Enter:break;
-                                
+                            case ConsoleKey.Enter: settingsHaveBeenSet = true; break;
+
                             case ConsoleKey.Escape: Environment.Exit(0); break;
                             default: break;
                         }
                         break;
 
-                    default:break;
+                    default: break;
                 }
+
+                 menuOptions = new List<string>()
+                { $"Field Width:{settings.fieldDimensionX}",$"Field Height: {settings.fieldDimensionY}",$"Number Of Mines: {settings.numberOfMines}","Start Game"};
+           
+                customGameMenu.UpdateMenuOptions(menuOptions);
+
             }
+
             return settings;
+
         }
+
+        
+
         public ConsoleKey WaitForInput()
         {
             

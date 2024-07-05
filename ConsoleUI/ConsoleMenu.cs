@@ -52,66 +52,24 @@ internal class ConsoleMenu
 
     }
 
+    public void UpdateMenuOptions(List<string> newMenuOptions)
+    { MenuOptions = newMenuOptions; }
    
     
     private void RenderOptionsBox(List<string> menuOptions)
     {
-        DrawBorder(DisplayWidth, DisplayHeight-3, 3 );
+        GI.DrawBorder(DisplayWidth, DisplayHeight-3, 3 );
         WrightOptions(menuOptions, DisplayWidth,3);
 
     }
     private static void RenderTitleBox(string title,int DisplayWidth)
     {
-        DrawBorder(DisplayWidth,3, 0);
-        WrightTextCenterd(GamePositionX, GamePositionY + 1, title,DisplayWidth);
+        GI.DrawBorder(DisplayWidth,3, 0);
+        GI.WrightTextCenterd(GamePositionX, GamePositionY + 1, title,DisplayWidth);
 
     }
-    private static void DrawBorder(int width, int height, int hightOfset)
-    {
-        char[,] border = new char[width, height];
-        int[] currentChar = new int[2];
 
-        for (int x = 0; x < width; x++)
-        {
-            for (int y = 0; y < height; y++)
-            {
-                currentChar[0] = x;
-                currentChar[1] = y;
 
-                if (x == 0 && y == 0)
-                {
-                    Console.SetCursorPosition(x + GamePositionX, y + GamePositionY + hightOfset);
-                    Console.Write('╔');
-                }
-                else if (x == width-1 && y == 0)
-                {
-                    Console.SetCursorPosition(x + GamePositionX, y + GamePositionY + hightOfset);
-                    Console.Write('╗');
-                }
-                else if (x == 0 && y == height - 1)
-                {
-                    Console.SetCursorPosition(x + GamePositionX, y + GamePositionY + hightOfset);
-                    Console.Write('╚');
-                }
-                else if (x == width - 1 && y == height - 1)
-                {
-                    Console.SetCursorPosition(x + GamePositionX, y + GamePositionY + hightOfset);
-                    Console.Write('╝');
-                }
-                else if (x == 0 || x == width - 1)
-                {
-                    Console.SetCursorPosition(x + GamePositionX, y + GamePositionY + hightOfset);
-                    Console.Write('║');
-                }
-                else if (y == 0 || y == height - 1)
-                {
-                    Console.SetCursorPosition(x + GamePositionX, y + GamePositionY + hightOfset);
-                    Console.Write('═');
-                }
-
-            }
-        }
-    }
     private static void HighlightMenuIndex(List<string> menuOptions, int menuIndex,int displayWidth)
     {
 
@@ -124,7 +82,7 @@ internal class ConsoleMenu
             var x = GamePositionX;
             var y = GamePositionY + yOfset + (menuIndex * 2) + 1;
 
-            WrightTextCenterd(x, y, highlightedOption, displayWidth);
+            GI.WrightTextCenterd(x, y, highlightedOption, displayWidth);
 
             
 
@@ -139,18 +97,12 @@ internal class ConsoleMenu
         var x = GamePositionX;
         var y = GamePositionY + yOfset + (optionCount * 2) + 1;
 
-        WrightTextCenterd(x, y, option, xDimention);
+        GI.WrightTextCenterd(x, y, option, xDimention);
 
         optionCount++;
 
     }
 }
-    private static void WrightTextCenterd(int curserPositionX, int curserPositionY, string text, int xDimention)
-    {
-        Console.SetCursorPosition(curserPositionX + (xDimention / 2) - (text.Length / 2), curserPositionY);
-        Console.WriteLine(text);
-
-    }
     private static int GetLongestString(string title, List<string> menuOptions)
     {
         var listCopy = new List<string>();

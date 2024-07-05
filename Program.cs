@@ -9,33 +9,40 @@ UI Ui = new UI();
 Minefield minefield;
 
 
-
 GI.initializeConsoleWindow();
-//GameSettings settings = new GameSettings(1);
 
-var settings = Ui.RunStartScreen();
+var isAppRunning = true;
 
-RunGame(settings);
+while (isAppRunning)
+{
 
-Console.Read();
+  var settings = Ui.RunStartScreen();
+
+  RunGame(settings);
+
+}
+
 
 
 
 
 void RunGame(GameSettings settings)
 {
-    var isGameRunning = true;  
     
+    var isGameRunning = true;
+
+    var hasPlayerClearedField = false;
+    var hasPlayerFailed = false;
+
     minefield = new Minefield(settings.fieldDimensionX,settings.fieldDimensionY,settings.numberOfMines);
 
-    //render screen
-   // GI.RenderScreen();
 
+    GI.RenderScreen(minefield);
+
+    
     while (isGameRunning)
     {
         GI.RenderDisplay(minefield);
-
-        // Make Highlighted Player Flash.
 
         GI.HighlightPlayer(Ui.player.GetLocation());
 
@@ -45,24 +52,26 @@ void RunGame(GameSettings settings)
    
         Ui.HandelInput(input,minefield);
 
-        isGameRunning = EvaluateField(); 
+        hasPlayerFailed = CheckIfPlayerHasFailed();
+        if (hasPlayerFailed) { isGameRunning = false; break; }
 
+        hasPlayerClearedField = CheckIfPlayerHasClearedField(); 
+        if (hasPlayerClearedField) { isGameRunning = false; break; }
     }
 
-
+    GI.RenderEndScreen(minefield, hasPlayerClearedField);
+    
     Console.Read();
 
-
-    bool EvaluateField()
+    bool CheckIfPlayerHasClearedField()
     {
         var FlagsOnMines = 0;
         var cellsStillHidden = 0;
 
         foreach (var cell in minefield.field)
         {
-            if(cell.containsAMine && !cell.IsCellHidden)
-            { return false; }
-            if (cell.IsCellHidden)
+            
+            if (cellsStillHidden < settings.numberOfMines +1 && cell.IsCellHidden)
             {cellsStillHidden++;}
 
             if (cell.containsAMine && cell.hasCellBeenFlagged)
@@ -70,10 +79,21 @@ void RunGame(GameSettings settings)
         }
         
         if (cellsStillHidden == settings.numberOfMines)
-        { return false; }
+        { return true; }
         else if (FlagsOnMines == settings.numberOfMines) 
-            { return false; }
-        else { return true; }
+             { return true; }
+        else { return false; }
+    }
+
+    bool CheckIfPlayerHasFailed()
+    {
+        foreach (var cell in minefield.field)
+        {
+          if(cell.containsAMine && !cell.IsCellHidden)
+          { return true; }
+        }
+
+       return false;
     }
      
 }
