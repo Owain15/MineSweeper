@@ -103,15 +103,7 @@ internal class ConsoleMenu
 
     }
 }
-    private static int GetLongestString(string title, List<string> menuOptions)
-    {
-        var listCopy = new List<string>();
+    private static int GetLongestString(string title, List<string> menuOptions) => menuOptions.Concat(new List<string>() { title }).Max(x => x.Length);
 
-        listCopy.Add(title);
-        foreach (var item in menuOptions) { listCopy.Add(item); }
 
-        return listCopy.Max(x => x.Length);
-    }
-
-   
 }
